@@ -25,7 +25,7 @@ public class CsvParser {
                     erhebung.setGeplant(record[4]);
                     erhebung.setErhoben(record[5]);
                     erhebung.setGuetepruefungOk(record[6]);
-
+// dies ist eine guter Zug
                     erhebungen.add(erhebung);
                 }
             }
