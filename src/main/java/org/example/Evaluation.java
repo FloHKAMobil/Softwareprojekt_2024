@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class Evaluation {
 
+    public static Map<String, List<FahrtDaten.Fahrt>> fahrtenMap = new HashMap<>();
+
     //ERHEBUNGSSTAND:
 
     //Bewertung des Erhebungsstandes nach Tagesgruppe und Linie (!!!Fahrt aktuell außenvorgelassen weil eig. schon in CSV-Datei beschrieben!!!)
@@ -130,14 +132,18 @@ public class Evaluation {
                 String tagesgruppe = stand.getTagesgruppe();
                 String abfahrtszeit = stand.getAbfahrtszeit().substring(0, 5); // Extrahiere nur die ersten 5 Zeichen (HH:mm)
 
-
+                int geplanteFahrten = Integer.parseInt(stand.getGeplant());
+                int guetepruefungOk = Integer.parseInt(stand.getGuetepruefung());
 
                 FahrtDaten.Fahrt fahrt = new FahrtDaten.Fahrt(
                         stand.getLinie(),
                         stand.getRichtung(),
                         tagesgruppe,
                         stand.getStarthaltestelle(),
-                        abfahrtszeit // Verkürzte Abfahrtszeit
+                        abfahrtszeit, // Verkürzte Abfahrtszeit
+                        geplanteFahrten,
+                        guetepruefungOk
+
                 );
                 fahrtenListe.add(fahrt);
             }
@@ -178,8 +184,16 @@ public class Evaluation {
                 System.out.println("Tagesgruppe: " + f.getTagesgruppe());
                 System.out.println("Starthaltestelle: " + f.getStarthaltestelle());
                 System.out.println("Abfahrtszeit: " + f.getAbfahrtszeit());
+                System.out.println("Anzahl geplanter Fahrten: " + f.getGeplanteFahrten());
+                System.out.println("Anzahl Fahrten mit erfolgreicher Gueteprüfung: " + f.getGuetepruefungOk());
                 System.out.println("Daten: " + String.join(", ", f.getDaten()));
                 System.out.println();
+            }
+
+            // Abspeichern der Fahrtenliste
+            for (FahrtDaten.Fahrt f : fahrtenListe) {
+                String key = f.getLinie() + "_" + f.getRichtung() + "_" + f.getTagesgruppe() + "_" + f.getStarthaltestelle() + "_" + f.getAbfahrtszeit();
+                fahrtenMap.computeIfAbsent(key, k -> new ArrayList<>()).add(f);
             }
 
         } catch (IOException e) {

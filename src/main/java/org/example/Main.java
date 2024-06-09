@@ -27,11 +27,11 @@ public class Main {
 
 
         //Einfaches Auslesen der Erhebungsstand.CSV
-        try {
+        /*try {
             Erhebungsstand_CsvParser.main(args);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         /*try {
             Thread.sleep(5000);
@@ -41,13 +41,18 @@ public class Main {
 
 
         //Einfaches Auslesen der Zaehlfahrten.CSV
-        try {
+        /*try {
             Zaehlfahrten_CsvParser.main(args);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         //Bewertung
-        Evaluation.main(args);
+        //Evaluation.main(args);
+
+        //Liste Fahrten ohne Guetepruefung
+        DispoList.main(args);
         }
+
+
     }

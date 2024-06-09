@@ -33,14 +33,18 @@ class FahrtDaten {
         private String tagesgruppe;
         private String starthaltestelle;
         private String abfahrtszeit;
+        private int geplanteFahrten;
+        private int guetepruefungOk;
         private List<String> daten;
 
-        public Fahrt(String linie, String richtung, String tagesgruppe, String starthaltestelle, String abfahrtszeit) {
+        public Fahrt(String linie, String richtung, String tagesgruppe, String starthaltestelle, String abfahrtszeit, int geplanteFahrten, int guetepruefungOk) {
             this.linie = linie;
             this.richtung = richtung;
             this.tagesgruppe = tagesgruppe;
             this.starthaltestelle = starthaltestelle;
             this.abfahrtszeit = abfahrtszeit;
+            this.geplanteFahrten = geplanteFahrten;
+            this.guetepruefungOk = guetepruefungOk;
             this.daten = new ArrayList<>();
         }
 
@@ -62,6 +66,14 @@ class FahrtDaten {
 
         public String getAbfahrtszeit() {
             return abfahrtszeit;
+        }
+
+        public int getGeplanteFahrten() {
+            return geplanteFahrten;
+        }
+
+        public int getGuetepruefungOk() {
+            return guetepruefungOk;
         }
 
         public List<String> getDaten() {
