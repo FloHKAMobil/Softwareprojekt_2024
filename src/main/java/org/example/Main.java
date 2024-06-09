@@ -22,16 +22,20 @@ public class Main {
         Config.setCsvFilePathErhebungsstand(filePathErhebungsstand);
         Config.setCsvFilePathZaehlfahrten(filePathZaehlfahrten);
 
-        // Scanner schließen
-        scanner.close();
+
 
 
         //Einfaches Auslesen der Erhebungsstand.CSV
-        /*try {
+        try {
             Erhebungsstand_CsvParser.main(args);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
+
+        System.out.println("^^Auslesen der Erhebungsstand.csv Datei^^, Fortsetzen? -> Eingabe");
+        String userInput = scanner.nextLine();
+        System.out.println("Benutzereingabe: " + userInput);
+
 
         /*try {
             Thread.sleep(5000);
@@ -41,17 +45,26 @@ public class Main {
 
 
         //Einfaches Auslesen der Zaehlfahrten.CSV
-        /*try {
+        try {
             Zaehlfahrten_CsvParser.main(args);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
+
+        System.out.println("^^Auslesen der Zaehlfahrten.csv Datei^^, Fortsetzen? -> Eingabe");
+        String userInput2 = scanner.nextLine();
+
+
 
         //Bewertung
-        //Evaluation.main(args);
+        Evaluation.main(args);
+        System.out.println("^^Durchführung der Bewertung der Daten nach Tagesgruppe, Linie, Quartal^^, Fortsetzen? -> Eingabe");
+        String userInput3 = scanner.nextLine();
 
         //Liste Fahrten ohne Guetepruefung
         DispoList.main(args);
+        System.out.println("^^Erstellung einer Dispositionsliste, Fortsetzen? -> Eingabe");
+        String userInput4 = scanner.nextLine();
         }
 
 
