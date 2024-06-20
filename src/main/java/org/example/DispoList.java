@@ -1,5 +1,7 @@
 package org.example;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DispoList {
@@ -7,7 +9,7 @@ public class DispoList {
     public static List<FahrtDaten.Fahrt> filterFahrtenOhneErfolgreicheGuetepruefung(Map<String, List<FahrtDaten.Fahrt>> fahrtenMap) {
         List<FahrtDaten.Fahrt> fahrtenOhneGuetepruefung = new ArrayList<>();
 
-        //Liste mit Fahrten ohne Güteprüfung
+        // Liste mit Fahrten ohne Güteprüfung
         for (List<FahrtDaten.Fahrt> fahrtenListe : fahrtenMap.values()) {
             for (FahrtDaten.Fahrt fahrt : fahrtenListe) {
                 if (fahrt.getGuetepruefungOk() == 0) {
@@ -19,38 +21,35 @@ public class DispoList {
         return fahrtenOhneGuetepruefung;
     }
 
-    /*Liste mit Priorisierten Fahrten
-    Priorisierung abhängig von:
-    1. Sortiert nach Tagesgruppe (Mo-Fr Schule, Mo-Fr Ferien, Sa, Sonn/Feiertag)
-    2. Anzahl der noch durchzuführenden Fahrten (Geplante Fahrten - Güteprüfung ok)
-    3. Uhrzeit
-
-     */
-    public static List<FahrtDaten.Fahrt> priorisierteFahrten(Map<String, List<FahrtDaten.Fahrt>> fahrtenMap) {
+    public static List<FahrtDaten.Fahrt> priorisierteFahrten(Map<String, List<FahrtDaten.Fahrt>> fahrtenMap, String aktuelleTagesgruppe) {
         List<FahrtDaten.Fahrt> allFahrten = new ArrayList<>();
 
         for (List<FahrtDaten.Fahrt> fahrtenListe : fahrtenMap.values()) {
-            allFahrten.addAll(fahrtenListe);
+            for (FahrtDaten.Fahrt fahrt : fahrtenListe) {
+                if (fahrt.getTagesgruppe().equals(aktuelleTagesgruppe)) {
+                    allFahrten.add(fahrt);
+                }
+            }
         }
 
         Collections.sort(allFahrten, new Comparator<FahrtDaten.Fahrt>() {
             @Override
             public int compare(FahrtDaten.Fahrt f1, FahrtDaten.Fahrt f2) {
-                // Compare by Tagesgruppe priority
+                // Vergleich nach Priorität der Tagesgruppe
                 int tagesgruppePriorityComparison = Integer.compare(getTagesgruppePriority(f1.getTagesgruppe()), getTagesgruppePriority(f2.getTagesgruppe()));
                 if (tagesgruppePriorityComparison != 0) {
                     return tagesgruppePriorityComparison;
                 }
 
-                // If Tagesgruppe priority is equal, compare by remaining Fahrten
-                int remainingFahrtenF1 = f1.getGeplanteFahrten() - f1.getGuetepruefungOk();
-                int remainingFahrtenF2 = f2.getGeplanteFahrten() - f2.getGuetepruefungOk();
-                int remainingFahrtenComparison = Integer.compare(remainingFahrtenF2, remainingFahrtenF1);
-                if (remainingFahrtenComparison != 0) {
-                    return remainingFahrtenComparison;
+                // Wenn die Priorität der Tagesgruppe gleich ist, Vergleich nach Fortschritt
+                double fortschrittF1 = (double) f1.getGuetepruefungOk() / f1.getGeplanteFahrten();
+                double fortschrittF2 = (double) f2.getGuetepruefungOk() / f2.getGeplanteFahrten();
+                int fortschrittComparison = Double.compare(fortschrittF1, fortschrittF2); // Sortiere aufsteigend nach Fortschritt
+                if (fortschrittComparison != 0) {
+                    return fortschrittComparison;
                 }
 
-                // If remaining Fahrten are equal, compare by Uhrzeit
+                // Wenn der Fortschritt gleich ist, Vergleich nach Uhrzeit
                 return f1.getAbfahrtszeit().compareTo(f2.getAbfahrtszeit());
             }
 
@@ -65,12 +64,67 @@ public class DispoList {
                     case "Sonn-/Feiertag":
                         return 4;
                     default:
-                        return Integer.MAX_VALUE; // Default priority for unexpected values
+                        return Integer.MAX_VALUE; // Standardpriorität für unerwartete Werte
                 }
             }
         });
 
         return allFahrten;
+    }
+
+    public static String getAktuelleTagesgruppe(Calendar calendar) {
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+        if (dayOfWeek == Calendar.SATURDAY) {
+            return "Samstag";
+        } else if (dayOfWeek == Calendar.SUNDAY || isHoliday(calendar)) {
+            return "Sonn-/Feiertag";
+        } else {
+            boolean isSchoolDay = isSchoolDay(calendar);
+            if (isSchoolDay) {
+                return "Montag - Freitag Schule";
+            } else {
+                return "Montag - Freitag Ferien";
+            }
+        }
+    }
+
+    private static boolean isSchoolDay(Calendar calendar) {
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        // Freitag ist ein Ferientag
+        return dayOfWeek != Calendar.FRIDAY;
+    }
+
+    private static boolean isHoliday(Calendar calendar) {
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        // Der erste Tag des Monats ist ein Feiertag
+        return dayOfMonth == 1;
+    }
+
+    public static Calendar getUserSpecifiedDate() {
+        Scanner scanner = new Scanner(System.in);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        Calendar calendar = Calendar.getInstance();
+
+        System.out.print("Soll das aktuelle Datum verwendet werden? (y/n): ");
+        String useCurrentDate = scanner.nextLine().trim().toLowerCase();
+
+        if (!useCurrentDate.equals("y")) {
+            boolean validDate = false;
+            while (!validDate) {
+                System.out.print("Bitte geben Sie das gewünschte Datum im Format DD.MM.YYYY ein: ");
+                String dateString = scanner.nextLine().trim();
+                try {
+                    Date date = sdf.parse(dateString);
+                    calendar.setTime(date);
+                    validDate = true;
+                } catch (ParseException e) {
+                    System.out.println("Ungültiges Datum. Bitte versuchen Sie es erneut.");
+                }
+            }
+        }
+
+        return calendar;
     }
 
     public static void main(String[] args) {
@@ -91,20 +145,25 @@ public class DispoList {
             System.out.println();
         }
 
-
-
-        List<FahrtDaten.Fahrt> prioritizedFahrten = priorisierteFahrten(Evaluation.fahrtenMap);
+        Calendar calendar = getUserSpecifiedDate();
+        String aktuelleTagesgruppe = getAktuelleTagesgruppe(calendar);
+        List<FahrtDaten.Fahrt> prioritizedFahrten = priorisierteFahrten(Evaluation.fahrtenMap, aktuelleTagesgruppe);
 
         System.out.println("PRIORISIERTE LISTE ALLER FAHRTEN: ");
         for (FahrtDaten.Fahrt fahrt : prioritizedFahrten) {
+            int nochDurchzufuehrendeFahrten = fahrt.getGeplanteFahrten() - fahrt.getGuetepruefungOk();
+            double fortschritt = (double) fahrt.getGuetepruefungOk() / fahrt.getGeplanteFahrten() * 100;
+
             System.out.println("Linie: " + fahrt.getLinie());
             System.out.println("Richtung: " + fahrt.getRichtung());
             System.out.println("Tagesgruppe: " + fahrt.getTagesgruppe());
             System.out.println("Starthaltestelle: " + fahrt.getStarthaltestelle());
             System.out.println("Abfahrtszeit: " + fahrt.getAbfahrtszeit());
-            System.out.println("Noch durchzuführende Fahrten: " + (fahrt.getGeplanteFahrten() - fahrt.getGuetepruefungOk()));
+            System.out.println("Noch durchzuführende Fahrten: " + nochDurchzufuehrendeFahrten);
+            System.out.printf("Fortschritt: %.2f%%\n", fortschritt);
             System.out.println("Daten: " + String.join(", ", fahrt.getDaten()));
             System.out.println();
         }
     }
 }
+

@@ -61,35 +61,35 @@ public class Evaluation {
             e.printStackTrace();
         }
 
+        /*System.out.println(" ");
         System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Nach Tagesgruppe:");
+        System.out.println("Nach Tagesgruppe:");*/
         for (Map.Entry<String, FahrtDaten> entry : tagesgruppenMap.entrySet()) {
             String tagesgruppe = entry.getKey();
             FahrtDaten daten = entry.getValue();
-            System.out.println("Tagesgruppe: " + tagesgruppe);
+            /*System.out.println("Tagesgruppe: " + tagesgruppe);
             System.out.println("Geplante Fahrten: " + daten.geplanteFahrten);
             System.out.println("Erhobene Fahrten: " + daten.erhobeneFahrten);
             System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);
-            System.out.println();
+            System.out.println();*/
         }
 
-        System.out.println("Nach Linie:");
+        /*System.out.println("Nach Linie:");*/
         for (Map.Entry<String, FahrtDaten> entry : linienMap.entrySet()) {
             String linie = entry.getKey();
             FahrtDaten daten = entry.getValue();
-            System.out.println("Linie: " + linie);
+            /*System.out.println("Linie: " + linie);
             System.out.println("Geplante Fahrten: " + daten.geplanteFahrten);
             System.out.println("Erhobene Fahrten: " + daten.erhobeneFahrten);
-            System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);
+            System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);*/
             System.out.println();
         }
 
 
         //Bewertung der Fahrtverteilung über ein Quartal
+        /*System.out.println(" ");
         System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Fahrtverteilung:");
+        System.out.println("Fahrtverteilung:");*/
         String erhebungsstandCsvFile = Config.getCsvFilePathErhebungsstand();
         String zaehlfahrtenCsvFile = Config.getCsvFilePathZaehlfahrten();
         //String erhebungsstandCsvFile = "E:\\Eigene Dateien\\Daten Florian\\Studium\\4.Semester\\VSMB430 Softwareentwicklung\\Projekt\\Erhebungsstand.csv";
@@ -178,7 +178,7 @@ public class Evaluation {
                 }
             }
 
-            for (FahrtDaten.Fahrt f : fahrtenListe) {
+            /*for (FahrtDaten.Fahrt f : fahrtenListe) {
                 System.out.println("Linie: " + f.getLinie());
                 System.out.println("Richtung: " + f.getRichtung());
                 System.out.println("Tagesgruppe: " + f.getTagesgruppe());
@@ -188,7 +188,7 @@ public class Evaluation {
                 System.out.println("Anzahl Fahrten mit erfolgreicher Gueteprüfung: " + f.getGuetepruefungOk());
                 System.out.println("Daten: " + String.join(", ", f.getDaten()));
                 System.out.println();
-            }
+            }*/
 
             // Abspeichern der Fahrtenliste
             for (FahrtDaten.Fahrt f : fahrtenListe) {

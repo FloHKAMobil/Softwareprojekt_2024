@@ -24,7 +24,7 @@ public class Main {
 
 
 
-
+/*
         //Einfaches Auslesen der Erhebungsstand.CSV
         try {
             Erhebungsstand_CsvParser.main(args);
@@ -41,7 +41,7 @@ public class Main {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }*/
+        }
 
 
         //Einfaches Auslesen der Zaehlfahrten.CSV
@@ -59,7 +59,7 @@ public class Main {
         //Bewertung
         Evaluation.main(args);
         System.out.println("^^Durchführung der Bewertung der Daten nach Tagesgruppe, Linie, Quartal^^, Fortsetzen? -> Eingabe");
-        String userInput3 = scanner.nextLine();
+        String userInput3 = scanner.nextLine();*/
 
         //Liste Fahrten ohne Guetepruefung
         DispoList.main(args);
