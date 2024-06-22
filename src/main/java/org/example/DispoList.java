@@ -215,7 +215,7 @@ public class DispoList {
                 // Write to file
                 writer.write(output);
             }
-            System.out.println("Erfolgreich in die Datei geschrieben: " + filePath);
+            System.out.println("Erfolgreich in die Log-Datei geschrieben: '" + filePath + "'");
         } catch (IOException e) {
             System.out.println("Ein Fehler ist beim Schreiben in die Datei aufgetreten.");
             e.printStackTrace();

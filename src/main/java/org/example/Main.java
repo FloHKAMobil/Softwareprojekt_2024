@@ -14,11 +14,11 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         // Benutzer nach dem Pfad zur Erhebungsstand CSV-Datei fragen
-        System.out.print("Eingabe des Pfades zur Erhebungsstand.CSV (bspw. E:\\Daten\\Erhebungsstand.csv: ");
+        System.out.print("Eingabe des Pfades zur Erhebungsstand.CSV (bspw. E:\\Daten\\Erhebungsstand.csv): ");
         String filePathErhebungsstand = scanner.nextLine();
 
         // Benutzer nach dem Pfad zur zweiten CSV-Datei fragen
-        System.out.print("Eingabe des Pfades zur Zaehlfahrten.CSV (bspw. E:\\Daten\\Zaehlfahrten.csv: ");
+        System.out.print("Eingabe des Pfades zur Zaehlfahrten.CSV (bspw. E:\\Daten\\Zaehlfahrten.csv): ");
         String filePathZaehlfahrten = scanner.nextLine();
 
         // Dateipfade in der Config-Klasse speichern
@@ -41,9 +41,9 @@ public class Main {
 
             // Create the file
             if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
+                System.out.println("Log-Datei erstellt: '" + filePath + "'");
             } else {
-                System.out.println("File already exists.");
+                System.out.println("Datei '" + file.getName() + "' existiert bereits: '" + filePath + "'");
             }
 
 
