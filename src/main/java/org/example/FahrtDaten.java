@@ -1,13 +1,13 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 class FahrtDaten {
     int geplanteFahrten;
     int erhobeneFahrten;
     int guetepruefungOk;
-
 
     FahrtDaten() {
         this.geplanteFahrten = 0;
@@ -36,6 +36,7 @@ class FahrtDaten {
         private int geplanteFahrten;
         private int guetepruefungOk;
         private List<String> daten;
+        private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
         public Fahrt(String linie, String richtung, String tagesgruppe, String starthaltestelle, String abfahrtszeit, int geplanteFahrten, int guetepruefungOk) {
             this.linie = linie;
@@ -82,7 +83,19 @@ class FahrtDaten {
 
         public void addDatum(String datum) {
             this.daten.add(datum);
+            sortDaten();
+        }
+
+        private void sortDaten() {
+            this.daten.sort((date1, date2) -> {
+                try {
+                    Date d1 = DATE_FORMAT.parse(date1);
+                    Date d2 = DATE_FORMAT.parse(date2);
+                    return d1.compareTo(d2);
+                } catch (ParseException e) {
+                    throw new RuntimeException("Error parsing date: " + e.getMessage());
+                }
+            });
         }
     }
 }
-

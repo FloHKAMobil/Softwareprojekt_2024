@@ -196,6 +196,8 @@ public class Evaluation {
                 fahrtenMap.computeIfAbsent(key, k -> new ArrayList<>()).add(f);
             }
 
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
