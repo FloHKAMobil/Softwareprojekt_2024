@@ -21,6 +21,20 @@ public class DispoList {
         return fahrtenOhneGuetepruefung;
     }
 
+    private static Date extractLetzteFahrtDatum(List<String> daten) {
+        if (daten.isEmpty()) {
+            return null; // Keine Daten vorhanden
+        }
+        String letzteFahrtString = daten.get(daten.size() - 1); // Letzter Eintrag in der Liste
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        try {
+            return sdf.parse(letzteFahrtString);
+        } catch (ParseException e) {
+            return null; // Ungültiges Datum
+        }
+    }
+
+
     public static List<FahrtDaten.Fahrt> priorisierteFahrten(Map<String, List<FahrtDaten.Fahrt>> fahrtenMap, String aktuelleTagesgruppe) {
         List<FahrtDaten.Fahrt> allFahrten = new ArrayList<>();
 
@@ -41,7 +55,7 @@ public class DispoList {
                     return tagesgruppePriorityComparison;
                 }
 
-                // Wenn die Priorität der Tagesgruppe gleich ist, Vergleich nach Fortschritt
+                // Vergleich nach Fortschritt
                 double fortschrittF1 = (double) f1.getGuetepruefungOk() / f1.getGeplanteFahrten();
                 double fortschrittF2 = (double) f2.getGuetepruefungOk() / f2.getGeplanteFahrten();
                 int fortschrittComparison = Double.compare(fortschrittF1, fortschrittF2); // Sortiere aufsteigend nach Fortschritt
@@ -49,7 +63,22 @@ public class DispoList {
                     return fortschrittComparison;
                 }
 
-                // Wenn der Fortschritt gleich ist, Vergleich nach Uhrzeit
+                // Vergleich nach Datum der letzten Fahrt
+                Date letzteFahrtDatumF1 = extractLetzteFahrtDatum(f1.getDaten());
+                Date letzteFahrtDatumF2 = extractLetzteFahrtDatum(f2.getDaten());
+
+                if (letzteFahrtDatumF1 == null && letzteFahrtDatumF2 != null) {
+                    return -1; // f1 hat noch keine Fahrt, wird höher gewichtet
+                } else if (letzteFahrtDatumF1 != null && letzteFahrtDatumF2 == null) {
+                    return 1; // f2 hat noch keine Fahrt, wird höher gewichtet
+                } else if (letzteFahrtDatumF1 != null && letzteFahrtDatumF2 != null) {
+                    int letzteFahrtComparison = letzteFahrtDatumF1.compareTo(letzteFahrtDatumF2);
+                    if (letzteFahrtComparison != 0) {
+                        return letzteFahrtComparison; // Sortiere aufsteigend nach Datum der letzten Fahrt
+                    }
+                }
+
+                // Wenn das Datum der letzten Fahrt gleich ist, Vergleich nach Abfahrtszeit
                 return f1.getAbfahrtszeit().compareTo(f2.getAbfahrtszeit());
             }
 
@@ -71,6 +100,7 @@ public class DispoList {
 
         return allFahrten;
     }
+
 
     public static String getAktuelleTagesgruppe(Calendar calendar) {
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -153,6 +183,8 @@ public class DispoList {
         for (FahrtDaten.Fahrt fahrt : prioritizedFahrten) {
             int nochDurchzufuehrendeFahrten = fahrt.getGeplanteFahrten() - fahrt.getGuetepruefungOk();
             double fortschritt = (double) fahrt.getGuetepruefungOk() / fahrt.getGeplanteFahrten() * 100;
+            Date letzteFahrtDatum = extractLetzteFahrtDatum(fahrt.getDaten());
+            long differenzInTagen = (calendar.getTime().getTime() - (letzteFahrtDatum != null ? letzteFahrtDatum.getTime() : calendar.getTime().getTime())) / (1000 * 60 * 60 * 24);
 
             System.out.println("Linie: " + fahrt.getLinie());
             System.out.println("Richtung: " + fahrt.getRichtung());
@@ -161,6 +193,8 @@ public class DispoList {
             System.out.println("Abfahrtszeit: " + fahrt.getAbfahrtszeit());
             System.out.println("Noch durchzuführende Fahrten: " + nochDurchzufuehrendeFahrten);
             System.out.printf("Fortschritt: %.2f%%\n", fortschritt);
+            System.out.println("Letzte Fahrt Datum: " + (letzteFahrtDatum != null ? letzteFahrtDatum : "Keine Fahrten durchgeführt"));
+            System.out.println("Tage seit der letzten Fahrt: " + (letzteFahrtDatum != null ? differenzInTagen : "Noch keine Fahrt durchgeführt"));
             System.out.println("Daten: " + String.join(", ", fahrt.getDaten()));
             System.out.println();
         }
