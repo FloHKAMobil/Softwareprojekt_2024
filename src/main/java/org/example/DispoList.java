@@ -1,8 +1,10 @@
 package org.example;
 
 import java.text.ParseException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.io.FileWriter;
 
 public class DispoList {
 
@@ -180,24 +182,43 @@ public class DispoList {
         List<FahrtDaten.Fahrt> prioritizedFahrten = priorisierteFahrten(Evaluation.fahrtenMap, aktuelleTagesgruppe);
 
         System.out.println("PRIORISIERTE LISTE ALLER FAHRTEN: ");
-        for (FahrtDaten.Fahrt fahrt : prioritizedFahrten) {
-            int nochDurchzufuehrendeFahrten = fahrt.getGeplanteFahrten() - fahrt.getGuetepruefungOk();
-            double fortschritt = (double) fahrt.getGuetepruefungOk() / fahrt.getGeplanteFahrten() * 100;
-            Date letzteFahrtDatum = extractLetzteFahrtDatum(fahrt.getDaten());
-            long differenzInTagen = (calendar.getTime().getTime() - (letzteFahrtDatum != null ? letzteFahrtDatum.getTime() : calendar.getTime().getTime())) / (1000 * 60 * 60 * 24);
 
-            System.out.println("Linie: " + fahrt.getLinie());
-            System.out.println("Richtung: " + fahrt.getRichtung());
-            System.out.println("Tagesgruppe: " + fahrt.getTagesgruppe());
-            System.out.println("Starthaltestelle: " + fahrt.getStarthaltestelle());
-            System.out.println("Abfahrtszeit: " + fahrt.getAbfahrtszeit());
-            System.out.println("Noch durchzuführende Fahrten: " + nochDurchzufuehrendeFahrten);
-            System.out.printf("Fortschritt: %.2f%%\n", fortschritt);
-            System.out.println("Letzte Fahrt Datum: " + (letzteFahrtDatum != null ? letzteFahrtDatum : "Keine Fahrten durchgeführt"));
-            System.out.println("Tage seit der letzten Fahrt: " + (letzteFahrtDatum != null ? differenzInTagen : "Noch keine Fahrt durchgeführt"));
-            System.out.println("Daten: " + String.join(", ", fahrt.getDaten()));
-            System.out.println();
+        // Get the username of the currently logged-in user
+        String userName = System.getProperty("user.name");
+        // Specify the path where you want to create the file, including the username
+        String filePath = "C:/Users/" + userName + "/AppData/Roaming/dispolist_log.txt";
+
+        try (FileWriter writer = new FileWriter(filePath, false)) { // 'false' means overwrite mode
+            for (FahrtDaten.Fahrt fahrt : prioritizedFahrten) {
+                int nochDurchzufuehrendeFahrten = fahrt.getGeplanteFahrten() - fahrt.getGuetepruefungOk();
+                double fortschritt = (double) fahrt.getGuetepruefungOk() / fahrt.getGeplanteFahrten() * 100;
+                Date letzteFahrtDatum = extractLetzteFahrtDatum(fahrt.getDaten());
+                long differenzInTagen = (calendar.getTime().getTime() - (letzteFahrtDatum != null ? letzteFahrtDatum.getTime() : calendar.getTime().getTime())) / (1000 * 60 * 60 * 24);
+
+                String output = String.format(
+                        "Linie: %s\nRichtung: %s\nTagesgruppe: %s\nStarthaltestelle: %s\nAbfahrtszeit: %s\nNoch durchzuführende Fahrten: %d\nFortschritt: %.2f%%\nLetzte Fahrt Datum: %s\nTage seit der letzten Fahrt: %s\nDaten: %s\n\n",
+                        fahrt.getLinie(),
+                        fahrt.getRichtung(),
+                        fahrt.getTagesgruppe(),
+                        fahrt.getStarthaltestelle(),
+                        fahrt.getAbfahrtszeit(),
+                        nochDurchzufuehrendeFahrten,
+                        fortschritt,
+                        (letzteFahrtDatum != null ? letzteFahrtDatum : "Keine Fahrten durchgeführt"),
+                        (letzteFahrtDatum != null ? differenzInTagen : "Noch keine Fahrt durchgeführt"),
+                        String.join(", ", fahrt.getDaten())
+                );
+
+                // Print to console
+                System.out.print(output);
+
+                // Write to file
+                writer.write(output);
+            }
+            System.out.println("Erfolgreich in die Datei geschrieben: " + filePath);
+        } catch (IOException e) {
+            System.out.println("Ein Fehler ist beim Schreiben in die Datei aufgetreten.");
+            e.printStackTrace();
         }
     }
 }
-
