@@ -1,0 +1,140 @@
+Key: 811000
+Geplante Fahrten: 1154
+Erhobene Fahrten: 0
+Güteprüfung ok: 0
+
+Key: 312180
+Geplante Fahrten: 2013
+Erhobene Fahrten: 47
+Güteprüfung ok: 0
+
+Key: 312080
+Geplante Fahrten: 2104
+Erhobene Fahrten: 77
+Güteprüfung ok: 1
+
+Key: 315790
+Geplante Fahrten: 5520
+Erhobene Fahrten: 757
+Güteprüfung ok: 619
+
+Key: 316120
+Geplante Fahrten: 2706
+Erhobene Fahrten: 360
+Güteprüfung ok: 301
+
+Key: 312160
+Geplante Fahrten: 2205
+Erhobene Fahrten: 567
+Güteprüfung ok: 421
+
+Key: 316200
+Geplante Fahrten: 5687
+Erhobene Fahrten: 1561
+Güteprüfung ok: 1161
+
+Key: 316201
+Geplante Fahrten: 340
+Erhobene Fahrten: 61
+Güteprüfung ok: 22
+
+Key: 315010
+Geplante Fahrten: 5062
+Erhobene Fahrten: 1124
+Güteprüfung ok: 785
+
+Key: 316121
+Geplante Fahrten: 300
+Erhobene Fahrten: 75
+Güteprüfung ok: 68
+
+Key: 313750
+Geplante Fahrten: 2920
+Erhobene Fahrten: 608
+Güteprüfung ok: 314
+
+Key: 313850
+Geplante Fahrten: 1831
+Erhobene Fahrten: 766
+Güteprüfung ok: 47
+
+Key: 313800
+Geplante Fahrten: 1712
+Erhobene Fahrten: 393
+Güteprüfung ok: 49
+
+Key: 786660
+Geplante Fahrten: 2874
+Erhobene Fahrten: 0
+Güteprüfung ok: 0
+
+Key: 313801
+Geplante Fahrten: 250
+Erhobene Fahrten: 96
+Güteprüfung ok: 0
+
+Key: 313900
+Geplante Fahrten: 5959
+Erhobene Fahrten: 991
+Güteprüfung ok: 251
+
+Key: 312090
+Geplante Fahrten: 10838
+Erhobene Fahrten: 3490
+Güteprüfung ok: 2508
+
+Key: 312070
+Geplante Fahrten: 10968
+Erhobene Fahrten: 5252
+Güteprüfung ok: 2019
+
+Key: 312050
+Geplante Fahrten: 2012
+Erhobene Fahrten: 581
+Güteprüfung ok: 482
+
+Key: 315040
+Geplante Fahrten: 1260
+Erhobene Fahrten: 92
+Güteprüfung ok: 50
+
+Key: 316250
+Geplante Fahrten: 7749
+Erhobene Fahrten: 861
+Güteprüfung ok: 751
+
+Key: 315780
+Geplante Fahrten: 1838
+Erhobene Fahrten: 137
+Güteprüfung ok: 104
+
+Key: 313860
+Geplante Fahrten: 1395
+Erhobene Fahrten: 271
+Güteprüfung ok: 37
+
+Key: 313910
+Geplante Fahrten: 378
+Erhobene Fahrten: 76
+Güteprüfung ok: 21
+
+Key: 340210
+Geplante Fahrten: 140
+Erhobene Fahrten: 39
+Güteprüfung ok: 37
+
+Key: 340650
+Geplante Fahrten: 168
+Erhobene Fahrten: 121
+Güteprüfung ok: 97
+
+Key: 340310
+Geplante Fahrten: 280
+Erhobene Fahrten: 98
+Güteprüfung ok: 77
+
+Key: 340550
+Geplante Fahrten: 224
+Erhobene Fahrten: 88
+Güteprüfung ok: 65
+
