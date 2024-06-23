@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Main {
 
@@ -12,20 +13,24 @@ public class Main {
 
         // Scanner-Objekt zum Lesen der Benutzereingabe erstellen
         Scanner scanner = new Scanner(System.in);
+        String userName = System.getProperty("user.name");
 
-        // Benutzer nach dem Pfad zur Erhebungsstand CSV-Datei fragen
-        System.out.print("Eingabe des Pfades zur Erhebungsstand.CSV (bspw. E:\\Daten\\Erhebungsstand.csv): ");
-        String filePathErhebungsstand = scanner.nextLine();
+        // Path to the configuration file
+        String configFilePath = "C:/Users/" + userName + "/AppData/Roaming/dispolist_config.txt";
+        File configFile = new File(configFilePath);
 
-        // Benutzer nach dem Pfad zur zweiten CSV-Datei fragen
-        System.out.print("Eingabe des Pfades zur Zaehlfahrten.CSV (bspw. E:\\Daten\\Zaehlfahrten.csv): ");
-        String filePathZaehlfahrten = scanner.nextLine();
+        String basePath;
 
-        // Dateipfade in der Config-Klasse speichern
+        // Method to get valid base path
+        basePath = getValidBasePath(scanner, configFile);
+
+        // Stitch together the file paths for the CSV files
+        String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
+        String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
+
+        // Save the file paths in the Config class
         Config.setCsvFilePathErhebungsstand(filePathErhebungsstand);
         Config.setCsvFilePathZaehlfahrten(filePathZaehlfahrten);
-
-        String userName = System.getProperty("user.name");
 
         // Specify the path where you want to create the file, including the username
         String filePath = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/dispolist_log.txt";
@@ -143,7 +148,48 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private static String getValidBasePath(Scanner scanner, File configFile) {
+        String basePath;
+        while (true) {
+            if (!configFile.exists()) {
+                basePath = promptUserForBasePath(scanner, configFile);
+            } else {
+                try {
+                    basePath = new String(Files.readAllBytes(Paths.get(configFile.getPath()))).trim();
+                } catch (IOException e) {
+                    throw new RuntimeException("Fehler beim Lesen der Konfigurationsdatei: ", e);
+                }
+            }
 
+            // Check if the constructed file paths exist
+            String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
+            String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
+            if (new File(filePathErhebungsstand).exists() && new File(filePathZaehlfahrten).exists()) {
+                break;
+            } else {
+                System.out.println("Ungültiger Pfad hinterlegt oder Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' existieren nicht im angegebenen Pfad. Bitte erneut eingeben.");
+                basePath = promptUserForBasePath(scanner, configFile);
+            }
+        }
+        return basePath;
+    }
+
+    private static String promptUserForBasePath(Scanner scanner, File configFile) {
+        try {
+            // Prompt user to input the base file path
+            System.out.print("Eingabe des Pfades zu den Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' (bspw. E:\\Daten\\Disposition\\): ");
+            String basePath = scanner.nextLine();
+
+            // Save the base path to the configuration file
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(basePath);
+            }
+
+            return basePath;
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Schreiben der Konfigurationsdatei: ", e);
+        }
     }
 }
