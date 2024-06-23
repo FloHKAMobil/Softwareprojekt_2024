@@ -1,52 +1,53 @@
 package org.example;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        // Scanner-Objekt zum Lesen der Benutzereingabe erstellen
         Scanner scanner = new Scanner(System.in);
+        String userName = System.getProperty("user.name");
 
-        // Benutzer nach dem Pfad zur Erhebungsstand CSV-Datei fragen
-        System.out.print("Eingabe des Pfades zur Erhebungsstand.CSV (bspw. E:\\Daten\\Erhebungsstand.csv): ");
-        String filePathErhebungsstand = scanner.nextLine();
+        // Path to the configuration file
+        String configFilePath = "C:/Users/" + userName + "/AppData/Roaming/dispolist_config.txt";
+        File configFile = new File(configFilePath);
 
-        // Benutzer nach dem Pfad zur zweiten CSV-Datei fragen
-        System.out.print("Eingabe des Pfades zur Zaehlfahrten.CSV (bspw. E:\\Daten\\Zaehlfahrten.csv): ");
-        String filePathZaehlfahrten = scanner.nextLine();
+        String basePath;
 
-        // Dateipfade in der Config-Klasse speichern
+        // Method to get valid base path
+        basePath = getValidBasePath(scanner, configFile);
+
+        // Stitch together the file paths for the CSV files
+        String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
+        String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
+
+        // Save the file paths in the Config class
         Config.setCsvFilePathErhebungsstand(filePathErhebungsstand);
         Config.setCsvFilePathZaehlfahrten(filePathZaehlfahrten);
 
-        String userName = System.getProperty("user.name");
-
-        // Specify the path where you want to create the file, including the username
-        String filePath = "C:/Users/" + userName + "/AppData/Roaming/dispolist_log.txt";
+        // Path to the log file
+        String logFilePath = "C:/Users/" + userName + "/AppData/Roaming/dispolist_log.txt";
 
         try {
-            // Create a File object with the specified path
-            File file = new File(filePath);
+            File logFile = new File(logFilePath);
 
-            // Check if the file's parent directory exists; if not, create it
-            if (file.getParentFile() != null && !file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
+            // Create parent directories if they don't exist
+            if (logFile.getParentFile() != null && !logFile.getParentFile().exists()) {
+                logFile.getParentFile().mkdirs();
             }
 
-            // Create the file
-            if (file.createNewFile()) {
-                System.out.println("Log-Datei erstellt: '" + filePath + "'");
+            // Create the log file
+            if (logFile.createNewFile()) {
+                System.out.println("Log-Datei erstellt: '" + logFilePath + "'");
             } else {
-                System.out.println("Datei '" + file.getName() + "' existiert bereits: '" + filePath + "'");
+                System.out.println("Datei '" + logFile.getName() + "' existiert bereits: '" + logFilePath + "'");
             }
-
-
 
 
 /*
@@ -86,14 +87,57 @@ public class Main {
         System.out.println("^^Durchführung der Bewertung der Daten nach Tagesgruppe, Linie, Quartal^^, Fortsetzen? -> Eingabe");
         String userInput3 = scanner.nextLine();*/
 
-            //Liste Fahrten ohne Guetepruefung
+
+
+            // Liste Fahrten ohne Guetepruefung
             DispoList.main(args);
             System.out.println("^^Erstellung einer Dispositionsliste, Fortsetzen? -> Eingabe");
             String userInput4 = scanner.nextLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private static String getValidBasePath(Scanner scanner, File configFile) {
+        String basePath;
+        while (true) {
+            if (!configFile.exists()) {
+                basePath = promptUserForBasePath(scanner, configFile);
+            } else {
+                try {
+                    basePath = new String(Files.readAllBytes(Paths.get(configFile.getPath()))).trim();
+                } catch (IOException e) {
+                    throw new RuntimeException("Fehler beim Lesen der Konfigurationsdatei: ", e);
+                }
+            }
 
+            // Check if the constructed file paths exist
+            String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
+            String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
+            if (new File(filePathErhebungsstand).exists() && new File(filePathZaehlfahrten).exists()) {
+                break;
+            } else {
+                System.out.println("Ungültiger Pfad hinterlegt oder Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' existieren nicht im angegebenen Pfad. Bitte erneut eingeben.");
+                basePath = promptUserForBasePath(scanner, configFile);
+            }
+        }
+        return basePath;
+    }
+
+    private static String promptUserForBasePath(Scanner scanner, File configFile) {
+        try {
+            // Prompt user to input the base file path
+            System.out.print("Eingabe des Pfades zu den Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' (bspw. E:\\Daten\\Disposition\\): ");
+            String basePath = scanner.nextLine();
+
+            // Save the base path to the configuration file
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(basePath);
+            }
+
+            return basePath;
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Schreiben der Konfigurationsdatei: ", e);
+        }
     }
 }
