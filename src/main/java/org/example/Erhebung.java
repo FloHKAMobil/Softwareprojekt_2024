@@ -1,4 +1,4 @@
-package com.example;
+package org.example;
 
 public class Erhebung {
     private String tagesgruppe;

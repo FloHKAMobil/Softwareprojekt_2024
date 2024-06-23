@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class Evaluation {
 
+    public static Map<String, List<FahrtDaten.Fahrt>> fahrtenMap = new HashMap<>();
+
     //ERHEBUNGSSTAND:
 
     //Bewertung des Erhebungsstandes nach Tagesgruppe und Linie (!!!Fahrt aktuell außenvorgelassen weil eig. schon in CSV-Datei beschrieben!!!)
@@ -59,35 +61,35 @@ public class Evaluation {
             e.printStackTrace();
         }
 
+        /*System.out.println(" ");
         System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Nach Tagesgruppe:");
+        System.out.println("Nach Tagesgruppe:");*/
         for (Map.Entry<String, FahrtDaten> entry : tagesgruppenMap.entrySet()) {
             String tagesgruppe = entry.getKey();
             FahrtDaten daten = entry.getValue();
-            System.out.println("Tagesgruppe: " + tagesgruppe);
+            /*System.out.println("Tagesgruppe: " + tagesgruppe);
             System.out.println("Geplante Fahrten: " + daten.geplanteFahrten);
             System.out.println("Erhobene Fahrten: " + daten.erhobeneFahrten);
             System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);
-            System.out.println();
+            System.out.println();*/
         }
 
-        System.out.println("Nach Linie:");
+        /*System.out.println("Nach Linie:");*/
         for (Map.Entry<String, FahrtDaten> entry : linienMap.entrySet()) {
             String linie = entry.getKey();
             FahrtDaten daten = entry.getValue();
-            System.out.println("Linie: " + linie);
+            /*System.out.println("Linie: " + linie);
             System.out.println("Geplante Fahrten: " + daten.geplanteFahrten);
             System.out.println("Erhobene Fahrten: " + daten.erhobeneFahrten);
-            System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);
+            System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);*/
             System.out.println();
         }
 
 
         //Bewertung der Fahrtverteilung über ein Quartal
+        /*System.out.println(" ");
         System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Fahrtverteilung:");
+        System.out.println("Fahrtverteilung:");*/
         String erhebungsstandCsvFile = Config.getCsvFilePathErhebungsstand();
         String zaehlfahrtenCsvFile = Config.getCsvFilePathZaehlfahrten();
         //String erhebungsstandCsvFile = "E:\\Eigene Dateien\\Daten Florian\\Studium\\4.Semester\\VSMB430 Softwareentwicklung\\Projekt\\Erhebungsstand.csv";
@@ -130,14 +132,18 @@ public class Evaluation {
                 String tagesgruppe = stand.getTagesgruppe();
                 String abfahrtszeit = stand.getAbfahrtszeit().substring(0, 5); // Extrahiere nur die ersten 5 Zeichen (HH:mm)
 
-
+                int geplanteFahrten = Integer.parseInt(stand.getGeplant());
+                int guetepruefungOk = Integer.parseInt(stand.getGuetepruefung());
 
                 FahrtDaten.Fahrt fahrt = new FahrtDaten.Fahrt(
                         stand.getLinie(),
                         stand.getRichtung(),
                         tagesgruppe,
                         stand.getStarthaltestelle(),
-                        abfahrtszeit // Verkürzte Abfahrtszeit
+                        abfahrtszeit, // Verkürzte Abfahrtszeit
+                        geplanteFahrten,
+                        guetepruefungOk
+
                 );
                 fahrtenListe.add(fahrt);
             }
@@ -172,15 +178,25 @@ public class Evaluation {
                 }
             }
 
-            for (FahrtDaten.Fahrt f : fahrtenListe) {
+            /*for (FahrtDaten.Fahrt f : fahrtenListe) {
                 System.out.println("Linie: " + f.getLinie());
                 System.out.println("Richtung: " + f.getRichtung());
                 System.out.println("Tagesgruppe: " + f.getTagesgruppe());
                 System.out.println("Starthaltestelle: " + f.getStarthaltestelle());
                 System.out.println("Abfahrtszeit: " + f.getAbfahrtszeit());
+                System.out.println("Anzahl geplanter Fahrten: " + f.getGeplanteFahrten());
+                System.out.println("Anzahl Fahrten mit erfolgreicher Gueteprüfung: " + f.getGuetepruefungOk());
                 System.out.println("Daten: " + String.join(", ", f.getDaten()));
                 System.out.println();
+            }*/
+
+            // Abspeichern der Fahrtenliste
+            for (FahrtDaten.Fahrt f : fahrtenListe) {
+                String key = f.getLinie() + "_" + f.getRichtung() + "_" + f.getTagesgruppe() + "_" + f.getStarthaltestelle() + "_" + f.getAbfahrtszeit();
+                fahrtenMap.computeIfAbsent(key, k -> new ArrayList<>()).add(f);
             }
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
