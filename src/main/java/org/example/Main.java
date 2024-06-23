@@ -1,16 +1,17 @@
 package org.example;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
+        // Scanner-Objekt zum Lesen der Benutzereingabe erstellen
         Scanner scanner = new Scanner(System.in);
         String userName = System.getProperty("user.name");
 
@@ -31,23 +32,76 @@ public class Main {
         Config.setCsvFilePathErhebungsstand(filePathErhebungsstand);
         Config.setCsvFilePathZaehlfahrten(filePathZaehlfahrten);
 
-        // Path to the log file
-        String logFilePath = "C:/Users/" + userName + "/AppData/Roaming/dispolist_log.txt";
+        // Specify the path where you want to create the file, including the username
+        String filePath = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/dispolist_log.txt";
+        String filePath2 = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/tagesgruppelist_log.txt";
+        String filePath3 = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/linienlist_log.txt";
+        String filePath4 = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/fahrtverteilunglist_log.txt";
 
         try {
-            File logFile = new File(logFilePath);
+            // Dispositionsliste als Datei
+            File file = new File(filePath);
 
-            // Create parent directories if they don't exist
-            if (logFile.getParentFile() != null && !logFile.getParentFile().exists()) {
-                logFile.getParentFile().mkdirs();
+            // Check if the file's parent directory exists; if not, create it
+            if (file.getParentFile() != null && !file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
             }
 
-            // Create the log file
-            if (logFile.createNewFile()) {
-                System.out.println("Log-Datei erstellt: '" + logFilePath + "'");
+            // Create the file
+            if (file.createNewFile()) {
+                System.out.println("Dispositionsliste erstellt: '" + filePath + "'");
             } else {
-                System.out.println("Datei '" + logFile.getName() + "' existiert bereits: '" + logFilePath + "'");
+                System.out.println("Datei '" + file.getName() + "' existiert bereits: '" + filePath + "'");
             }
+
+            // Tagesgruppenliste als Datei
+            File file2 = new File(filePath2);
+
+            // Check if the file's parent directory exists; if not, create it
+            if (file2.getParentFile() != null && !file2.getParentFile().exists()) {
+                file2.getParentFile().mkdirs();
+            }
+
+            // Create the file
+            if (file2.createNewFile()) {
+                System.out.println("Tagesgruppenliste erstellt: '" + filePath2 + "'");
+            } else {
+                System.out.println("Datei '" + file2.getName() + "' existiert bereits: '" + filePath2 + "'");
+            }
+
+            // Linienliste als Datei
+            File file3 = new File(filePath3);
+
+            // Check if the file's parent directory exists; if not, create it
+            if (file3.getParentFile() != null && !file3.getParentFile().exists()) {
+                file3.getParentFile().mkdirs();
+            }
+
+            // Create the file
+            if (file3.createNewFile()) {
+                System.out.println("Tagesgruppenliste erstellt: '" + filePath3 + "'");
+            } else {
+                System.out.println("Datei '" + file3.getName() + "' existiert bereits: '" + filePath3 + "'");
+            }
+
+            // Fahrtverteilungsliste als Datei
+            File file4 = new File(filePath4);
+
+            // Check if the file's parent directory exists; if not, create it
+            if (file4.getParentFile() != null && !file4.getParentFile().exists()) {
+                file4.getParentFile().mkdirs();
+            }
+
+            // Create the file
+            if (file4.createNewFile()) {
+                System.out.println("Tagesgruppenliste erstellt: '" + filePath4 + "'");
+            } else {
+                System.out.println("Datei '" + file4.getName() + "' existiert bereits: '" + filePath4 + "'");
+            }
+
+
+
+
 
 
 /*
@@ -87,9 +141,7 @@ public class Main {
         System.out.println("^^Durchführung der Bewertung der Daten nach Tagesgruppe, Linie, Quartal^^, Fortsetzen? -> Eingabe");
         String userInput3 = scanner.nextLine();*/
 
-
-
-            // Liste Fahrten ohne Guetepruefung
+            //Liste Fahrten ohne Guetepruefung
             DispoList.main(args);
             System.out.println("^^Erstellung einer Dispositionsliste, Fortsetzen? -> Eingabe");
             String userInput4 = scanner.nextLine();

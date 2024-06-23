@@ -1,0 +1,20 @@
+Key: Montag - Freitag Schule
+Geplante Fahrten: 56788
+Erhobene Fahrten: 11959
+Güteprüfung ok: 6557
+
+Key: Sonn-/Feiertag
+Geplante Fahrten: 4492
+Erhobene Fahrten: 1574
+Güteprüfung ok: 876
+
+Key: Samstag
+Geplante Fahrten: 4872
+Erhobene Fahrten: 1642
+Güteprüfung ok: 943
+
+Key: Montag - Freitag Ferien
+Geplante Fahrten: 13735
+Erhobene Fahrten: 3414
+Güteprüfung ok: 1911
+

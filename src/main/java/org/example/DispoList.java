@@ -186,7 +186,7 @@ public class DispoList {
         // Get the username of the currently logged-in user
         String userName = System.getProperty("user.name");
         // Specify the path where you want to create the file, including the username
-        String filePath = "C:/Users/" + userName + "/AppData/Roaming/dispolist_log.txt";
+        String filePath = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/dispolist_log.txt";
 
         try (FileWriter writer = new FileWriter(filePath, false)) { // 'false' means overwrite mode
             for (FahrtDaten.Fahrt fahrt : prioritizedFahrten) {
