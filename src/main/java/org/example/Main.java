@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class Main {
 
@@ -84,25 +85,6 @@ public class Main {
                 System.out.println("Datei '" + file3.getName() + "' existiert bereits: '" + filePath3 + "'");
             }
 
-            // Fahrtverteilungsliste als Datei
-            File file4 = new File(filePath4);
-
-            // Check if the file's parent directory exists; if not, create it
-            if (file4.getParentFile() != null && !file4.getParentFile().exists()) {
-                file4.getParentFile().mkdirs();
-            }
-
-            // Create the file
-            if (file4.createNewFile()) {
-                System.out.println("Tagesgruppenliste erstellt: '" + filePath4 + "'");
-            } else {
-                System.out.println("Datei '" + file4.getName() + "' existiert bereits: '" + filePath4 + "'");
-            }
-
-
-
-
-
 
 /*
         //Einfaches Auslesen der Erhebungsstand.CSV
@@ -141,7 +123,9 @@ public class Main {
         System.out.println("^^Durchführung der Bewertung der Daten nach Tagesgruppe, Linie, Quartal^^, Fortsetzen? -> Eingabe");
         String userInput3 = scanner.nextLine();*/
 
-            //Liste Fahrten ohne Guetepruefung
+
+
+            // Liste Fahrten ohne Guetepruefung
             DispoList.main(args);
             System.out.println("^^Erstellung einer Dispositionsliste, Fortsetzen? -> Eingabe");
             String userInput4 = scanner.nextLine();
@@ -151,6 +135,7 @@ public class Main {
     }
 
     private static String getValidBasePath(Scanner scanner, File configFile) {
+        String userName = System.getProperty("user.name");
         String basePath;
         while (true) {
             if (!configFile.exists()) {
@@ -158,6 +143,15 @@ public class Main {
             } else {
                 try {
                     basePath = new String(Files.readAllBytes(Paths.get(configFile.getPath()))).trim();
+                    System.out.println("Konfigurationsdatei lokalisiert.");
+
+                    // Ask user if they want to edit the path
+                    System.out.print("Möchten Sie den Pfad in der Konfigurationsdatei ändern? (y/n): ");
+                    String editChoice = scanner.nextLine();
+                    if (editChoice.equalsIgnoreCase("y")) {
+                        basePath = promptUserForBasePath(scanner, configFile);
+                    }
+
                 } catch (IOException e) {
                     throw new RuntimeException("Fehler beim Lesen der Konfigurationsdatei: ", e);
                 }
@@ -167,6 +161,7 @@ public class Main {
             String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
             String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
             if (new File(filePathErhebungsstand).exists() && new File(filePathZaehlfahrten).exists()) {
+                System.out.println("Dateipfad automatisch eingelesen und validiert. Zur Veränderung des Pfades bitte die Datei 'C:/Users/" + userName + "/AppData/Roaming/dispolist_config.txt' löschen.");
                 break;
             } else {
                 System.out.println("Ungültiger Pfad hinterlegt oder Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' existieren nicht im angegebenen Pfad. Bitte erneut eingeben.");
