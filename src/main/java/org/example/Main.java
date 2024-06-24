@@ -46,7 +46,7 @@ public class Main {
             if (logFile.createNewFile()) {
                 System.out.println("Log-Datei erstellt: '" + logFilePath + "'. Auswertungsergebnisse werden in dieser Datei gespeichert.");
             } else {
-                System.out.println("Die Logdatei '" + logFile.getName() + "' existiert bereits: '" + logFilePath + "'. Die Datei wird mit den neuen Auswertungsergebnissen überschrieben. Wenn sie die alten Ergebnisse behalten möchten, speichern sie die Datei bitte jetzt an anderer Stelle ab.");
+                System.out.println("Die Logdatei '" + logFile.getName() + "' existiert bereits: '" + logFilePath + "'. Die Datei wird mit den neuen Auswertungsergebnissen überschrieben. \nWenn sie die alten Ergebnisse behalten möchten, speichern sie die Datei bitte jetzt an anderer Stelle ab.");
             }
 
 
