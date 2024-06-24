@@ -149,6 +149,7 @@ public class Main {
                     System.out.print("Möchten Sie den Pfad in der Konfigurationsdatei ändern? (y/n): ");
                     String editChoice = scanner.nextLine();
                     if (editChoice.equalsIgnoreCase("y")) {
+                        System.out.println("Konfigurationsdatei gefunden.");
                         basePath = promptUserForBasePath(scanner, configFile);
                     }
 
@@ -161,7 +162,7 @@ public class Main {
             String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
             String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
             if (new File(filePathErhebungsstand).exists() && new File(filePathZaehlfahrten).exists()) {
-                System.out.println("Dateipfad automatisch eingelesen und validiert. Zur Veränderung des Pfades bitte die Datei 'C:/Users/" + userName + "/AppData/Roaming/dispolist_config.txt' löschen.");
+                System.out.println("Dateipfad automatisch eingelesen und validiert.");
                 break;
             } else {
                 System.out.println("Ungültiger Pfad hinterlegt oder Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' existieren nicht im angegebenen Pfad. Bitte erneut eingeben.");
