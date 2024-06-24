@@ -164,7 +164,7 @@ public class DispoList {
 
         List<FahrtDaten.Fahrt> result = filterFahrtenOhneErfolgreicheGuetepruefung(Evaluation.fahrtenMap);
 
-        System.out.println("LISTE FAHRTEN MIT FEHLENDER GÜTEPRÜFUNG: ");
+/*        System.out.println("LISTE FAHRTEN MIT FEHLENDER GÜTEPRÜFUNG: ");
         for (FahrtDaten.Fahrt fahrt : result) {
             System.out.println("Linie: " + fahrt.getLinie());
             System.out.println("Richtung: " + fahrt.getRichtung());
@@ -176,7 +176,7 @@ public class DispoList {
             System.out.println("Daten: " + String.join(", ", fahrt.getDaten()));
             System.out.println();
         }
-
+*/
         Calendar calendar = getUserSpecifiedDate();
         String aktuelleTagesgruppe = getAktuelleTagesgruppe(calendar);
         List<FahrtDaten.Fahrt> prioritizedFahrten = priorisierteFahrten(Evaluation.fahrtenMap, aktuelleTagesgruppe);
@@ -210,7 +210,7 @@ public class DispoList {
                 );
 
                 // Print to console
-                System.out.print(output);
+                //System.out.print(output);
 
                 // Write to file
                 writer.write(output);

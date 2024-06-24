@@ -69,7 +69,7 @@ public class Evaluation {
         writeToFile(filePath2, tagesgruppenMap, "Tagesgruppe");
         writeToFile(filePath3, linienMap, "Linie");
 
-        System.out.println(" ");
+/*        System.out.println(" ");
         System.out.println(" ");
         System.out.println("Nach Tagesgruppe:");
         for (Map.Entry<String, FahrtDaten> entry : tagesgruppenMap.entrySet()) {
@@ -96,7 +96,7 @@ public class Evaluation {
         // Bewertung der Fahrtverteilung über ein Quartal
         System.out.println(" ");
         System.out.println(" ");
-        System.out.println("Fahrtverteilung:");
+        System.out.println("Fahrtverteilung:"); */
         String erhebungsstandCsvFile = Config.getCsvFilePathErhebungsstand();
         String zaehlfahrtenCsvFile = Config.getCsvFilePathZaehlfahrten();
         List<FahrtDaten.Fahrt> fahrtenListe = new ArrayList<>();
@@ -172,7 +172,7 @@ public class Evaluation {
             writeFahrtverteilungToFile(filePath4, fahrtenListe);
 
             // Optional: Ausgabe der Fahrtverteilung auf der Konsole
-            for (FahrtDaten.Fahrt f : fahrtenListe) {
+ /*           for (FahrtDaten.Fahrt f : fahrtenListe) {
                 System.out.println("Linie: " + f.getLinie());
                 System.out.println("Richtung: " + f.getRichtung());
                 System.out.println("Tagesgruppe: " + f.getTagesgruppe());
@@ -182,7 +182,7 @@ public class Evaluation {
                 System.out.println("Anzahl Fahrten mit erfolgreicher Güteprüfung: " + f.getGuetepruefungOk());
                 System.out.println("Daten: " + String.join(", ", f.getDaten()));
                 System.out.println();
-            }
+            }*/
 
             // Abspeichern der Fahrtenliste
             for (FahrtDaten.Fahrt f : fahrtenListe) {
@@ -206,7 +206,7 @@ public class Evaluation {
                 );
 
                 // Print to console
-                System.out.print(output);
+                //System.out.print(output);
 
                 // Write to file
                 writer.write(output);
@@ -234,7 +234,7 @@ public class Evaluation {
                 );
 
                 // Print to console
-                System.out.print(output);
+                //System.out.print(output);
 
                 // Write to file
                 writer.write(output);
