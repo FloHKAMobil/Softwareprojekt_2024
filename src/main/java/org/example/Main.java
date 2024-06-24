@@ -49,46 +49,6 @@ public class Main {
                 System.out.println("Die Logdatei '" + logFile.getName() + "' existiert bereits: '" + logFilePath + "'. Die Datei wird mit den neuen Auswertungsergebnissen überschrieben. \nWenn sie die alten Ergebnisse behalten möchten, speichern sie die Datei bitte jetzt an anderer Stelle ab.");
             }
 
-
-/*
-        //Einfaches Auslesen der Erhebungsstand.CSV
-        try {
-            Erhebungsstand_CsvParser.main(args);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("^^Auslesen der Erhebungsstand.csv Datei^^, Fortsetzen? -> Eingabe");
-        String userInput = scanner.nextLine();
-        System.out.println("Benutzereingabe: " + userInput);
-
-
-        /*try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        //Einfaches Auslesen der Zaehlfahrten.CSV
-        try {
-            Zaehlfahrten_CsvParser.main(args);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("^^Auslesen der Zaehlfahrten.csv Datei^^, Fortsetzen? -> Eingabe");
-        String userInput2 = scanner.nextLine();
-
-
-
-        //Bewertung
-        Evaluation.main(args);
-        System.out.println("^^Durchführung der Bewertung der Daten nach Tagesgruppe, Linie, Quartal^^, Fortsetzen? -> Eingabe");
-        String userInput3 = scanner.nextLine();*/
-
-
-
             // Liste Fahrten ohne Guetepruefung
             DispoList.main(args);
             System.out.println("^^Erstellung einer Dispositionsliste, Fortsetzen? -> Eingabe");
@@ -108,6 +68,14 @@ public class Main {
                 try {
                     basePath = new String(Files.readAllBytes(Paths.get(configFile.getPath()))).trim();
                     System.out.println("Konfigurationsdatei lokalisiert.");
+
+                    // Ask user if they want to edit the path
+                    System.out.print("Möchten Sie den Pfad in der Konfigurationsdatei ändern? (y/n): ");
+                    String editChoice = scanner.nextLine();
+                    if (editChoice.equalsIgnoreCase("y")) {
+                        basePath = promptUserForBasePath(scanner, configFile);
+                    }
+
                 } catch (IOException e) {
                     throw new RuntimeException("Fehler beim Lesen der Konfigurationsdatei: ", e);
                 }
