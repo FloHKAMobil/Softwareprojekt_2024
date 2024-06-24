@@ -44,9 +44,9 @@ public class Main {
 
             // Create the log file
             if (logFile.createNewFile()) {
-                System.out.println("Log-Datei erstellt: '" + logFilePath + "'");
+                System.out.println("Log-Datei erstellt: '" + logFilePath + "'. Auswertungsergebnisse werden in dieser Datei gespeichert.");
             } else {
-                System.out.println("Datei '" + logFile.getName() + "' existiert bereits: '" + logFilePath + "'");
+                System.out.println("Die Logdatei '" + logFile.getName() + "' existiert bereits: '" + logFilePath + "'. Die Datei wird mit den neuen Auswertungsergebnissen überschrieben. Wenn sie die alten Ergebnisse behalten möchten, speichern sie die Datei bitte jetzt an anderer Stelle ab.");
             }
 
 
@@ -99,6 +99,7 @@ public class Main {
     }
 
     private static String getValidBasePath(Scanner scanner, File configFile) {
+        String userName = System.getProperty("user.name");
         String basePath;
         while (true) {
             if (!configFile.exists()) {
@@ -106,6 +107,7 @@ public class Main {
             } else {
                 try {
                     basePath = new String(Files.readAllBytes(Paths.get(configFile.getPath()))).trim();
+                    System.out.println("Konfigurationsdatei lokalisiert.");
                 } catch (IOException e) {
                     throw new RuntimeException("Fehler beim Lesen der Konfigurationsdatei: ", e);
                 }
@@ -115,6 +117,7 @@ public class Main {
             String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
             String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
             if (new File(filePathErhebungsstand).exists() && new File(filePathZaehlfahrten).exists()) {
+                System.out.println("Dateipfad automatisch eingelesen und validiert. Zur Veränderung des Pfades bitte die Datei 'C:/Users/" + userName + "/AppData/Roaming/dispolist_config.txt' löschen.");
                 break;
             } else {
                 System.out.println("Ungültiger Pfad hinterlegt oder Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' existieren nicht im angegebenen Pfad. Bitte erneut eingeben.");
