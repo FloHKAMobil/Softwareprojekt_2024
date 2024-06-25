@@ -138,13 +138,13 @@ public class DispoList {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         Calendar calendar = Calendar.getInstance();
 
-        System.out.print("Soll das aktuelle Datum verwendet werden? (y/n): ");
+        System.out.print("\nSoll das aktuelle Datum verwendet werden? (y/n): ");
         String useCurrentDate = scanner.nextLine().trim().toLowerCase();
 
         if (!useCurrentDate.equals("y")) {
             boolean validDate = false;
             while (!validDate) {
-                System.out.print("Bitte geben Sie das gewünschte Datum im Format DD.MM.YYYY ein: ");
+                System.out.print("\nBitte geben Sie das gewünschte Datum im Format DD.MM.YYYY ein: ");
                 String dateString = scanner.nextLine().trim();
                 try {
                     Date date = sdf.parse(dateString);
@@ -181,7 +181,7 @@ public class DispoList {
         String aktuelleTagesgruppe = getAktuelleTagesgruppe(calendar);
         List<FahrtDaten.Fahrt> prioritizedFahrten = priorisierteFahrten(Evaluation.fahrtenMap, aktuelleTagesgruppe);
 
-        System.out.println("PRIORISIERTE LISTE ALLER FAHRTEN: ");
+        System.out.println("\nPRIORISIERTE LISTE ALLER FAHRTEN: ");
 
         // Get the username of the currently logged-in user
         String userName = System.getProperty("user.name");

@@ -162,10 +162,10 @@ public class Main {
             String filePathErhebungsstand = basePath + "Erhebungsstand.csv";
             String filePathZaehlfahrten = basePath + "Zaehlfahrten.csv";
             if (new File(filePathErhebungsstand).exists() && new File(filePathZaehlfahrten).exists()) {
-                System.out.println("Dateipfad automatisch eingelesen und validiert.");
+                System.out.println("Dateipfad automatisch eingelesen und validiert.\n");
                 break;
             } else {
-                System.out.println("Ungültiger Pfad hinterlegt oder Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' existieren nicht im angegebenen Pfad. Bitte erneut eingeben.");
+                System.out.println("Ungültiger Pfad hinterlegt oder Dateien 'Erhebungsstand.csv' und 'Zaehlfahrten.csv' existieren nicht im angegebenen Pfad. Bitte erneut eingeben.\n");
                 basePath = promptUserForBasePath(scanner, configFile);
             }
         }
