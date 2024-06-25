@@ -9,23 +9,28 @@ class FahrtDaten {
     int erhobeneFahrten;
     int guetepruefungOk;
 
+    //Konstruktor zur Initialisierung der geplanten, erhobenen und erfolgreichen (Erfüllung Gütekriterien) Fahrten
     FahrtDaten() {
         this.geplanteFahrten = 0;
         this.erhobeneFahrten = 0;
         this.guetepruefungOk = 0;
     }
 
+    //Hinzufügen der Anzahl der geplanten Fahrten
     void addGeplanteFahrt(int count) {
         this.geplanteFahrten += count;
     }
 
+    //Hinzufügen der Anzahl der erhobenen Fahrten
     void addErhobeneFahrt(int count) {
         this.erhobeneFahrten += count;
     }
 
+    //Hinzufügen der Anzahl der erfolgreichen (Gütekriterien) Fahrten
     void addGuetepruefungOk(int count) {
         this.guetepruefungOk += count;
     }
+
 
     public static class Fahrt {
         private String linie;
@@ -38,6 +43,7 @@ class FahrtDaten {
         private List<String> daten;
         private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
+        //Konstruktor zur Initialisierung einer Fahrt mit allen relevanten Parametern
         public Fahrt(String linie, String richtung, String tagesgruppe, String starthaltestelle, String abfahrtszeit, int geplanteFahrten, int guetepruefungOk) {
             this.linie = linie;
             this.richtung = richtung;
@@ -81,11 +87,13 @@ class FahrtDaten {
             return daten;
         }
 
+        //Fügt Datum zur Liste hinzu
         public void addDatum(String datum) {
             this.daten.add(datum);
             sortDaten();
         }
 
+        //Sortiert Liste nach Datum
         private void sortDaten() {
             this.daten.sort((date1, date2) -> {
                 try {

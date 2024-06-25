@@ -8,7 +8,8 @@ import java.io.FileWriter;
 
 public class DispoList {
 
-    public static List<FahrtDaten.Fahrt> filterFahrtenOhneErfolgreicheGuetepruefung(Map<String, List<FahrtDaten.Fahrt>> fahrtenMap) {
+    //Möglichkeit auch Liste nur mit Fahrten ohne Güteprüfung auszugeben, aus der aktuellen Version herausgenommen, da akt. keine Verwendung!!!
+    /*public static List<FahrtDaten.Fahrt> filterFahrtenOhneErfolgreicheGuetepruefung(Map<String, List<FahrtDaten.Fahrt>> fahrtenMap) {
         List<FahrtDaten.Fahrt> fahrtenOhneGuetepruefung = new ArrayList<>();
 
         // Liste mit Fahrten ohne Güteprüfung
@@ -21,25 +22,28 @@ public class DispoList {
         }
 
         return fahrtenOhneGuetepruefung;
-    }
+    }*/
 
-    private static Date extractLetzteFahrtDatum(List<String> daten) {
+    //letzter Datumseintrag aus der Fahrt auslesen
+    private static Date extractFahrtDatum(List<String> daten) {
         if (daten.isEmpty()) {
             return null; // Keine Daten vorhanden
         }
-        String letzteFahrtString = daten.get(daten.size() - 1); // Letzter Eintrag in der Liste
+        String FahrtString = daten.get(daten.size() - 1); // Letzter Eintrag in der Liste
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         try {
-            return sdf.parse(letzteFahrtString);
+            return sdf.parse(FahrtString);
         } catch (ParseException e) {
             return null; // Ungültiges Datum
         }
     }
 
 
+    //Erstellung der Dispositionsliste
     public static List<FahrtDaten.Fahrt> priorisierteFahrten(Map<String, List<FahrtDaten.Fahrt>> fahrtenMap, String aktuelleTagesgruppe) {
         List<FahrtDaten.Fahrt> allFahrten = new ArrayList<>();
 
+        //Sammeln aller Fahrten der aktuellen Tagesgruppe
         for (List<FahrtDaten.Fahrt> fahrtenListe : fahrtenMap.values()) {
             for (FahrtDaten.Fahrt fahrt : fahrtenListe) {
                 if (fahrt.getTagesgruppe().equals(aktuelleTagesgruppe)) {
@@ -48,42 +52,44 @@ public class DispoList {
             }
         }
 
-        Collections.sort(allFahrten, new Comparator<FahrtDaten.Fahrt>() {
+        //Sortierung der Fahrten
+        allFahrten.sort(new Comparator<FahrtDaten.Fahrt>() {
             @Override
-            public int compare(FahrtDaten.Fahrt f1, FahrtDaten.Fahrt f2) {
+            public int compare(FahrtDaten.Fahrt fahrt1, FahrtDaten.Fahrt fahrt2) {
                 // Vergleich nach Priorität der Tagesgruppe
-                int tagesgruppePriorityComparison = Integer.compare(getTagesgruppePriority(f1.getTagesgruppe()), getTagesgruppePriority(f2.getTagesgruppe()));
-                if (tagesgruppePriorityComparison != 0) {
-                    return tagesgruppePriorityComparison;
+                int tagesgruppePrioComparison = Integer.compare(getTagesgruppePriority(fahrt1.getTagesgruppe()), getTagesgruppePriority(fahrt2.getTagesgruppe()));
+                if (tagesgruppePrioComparison != 0) {
+                    return tagesgruppePrioComparison;
                 }
 
                 // Vergleich nach Fortschritt
-                double fortschrittF1 = (double) f1.getGuetepruefungOk() / f1.getGeplanteFahrten();
-                double fortschrittF2 = (double) f2.getGuetepruefungOk() / f2.getGeplanteFahrten();
-                int fortschrittComparison = Double.compare(fortschrittF1, fortschrittF2); // Sortiere aufsteigend nach Fortschritt
+                double fortschrittF1 = (double) fahrt1.getGuetepruefungOk() / fahrt1.getGeplanteFahrten();
+                double fortschrittFahrt2 = (double) fahrt2.getGuetepruefungOk() / fahrt2.getGeplanteFahrten();
+                int fortschrittComparison = Double.compare(fortschrittF1, fortschrittFahrt2); // Sortiere aufsteigend nach Fortschritt
                 if (fortschrittComparison != 0) {
                     return fortschrittComparison;
                 }
 
                 // Vergleich nach Datum der letzten Fahrt
-                Date letzteFahrtDatumF1 = extractLetzteFahrtDatum(f1.getDaten());
-                Date letzteFahrtDatumF2 = extractLetzteFahrtDatum(f2.getDaten());
+                Date datumFahrt1 = extractFahrtDatum(fahrt1.getDaten());
+                Date datumFahrt2 = extractFahrtDatum(fahrt2.getDaten());
 
-                if (letzteFahrtDatumF1 == null && letzteFahrtDatumF2 != null) {
-                    return -1; // f1 hat noch keine Fahrt, wird höher gewichtet
-                } else if (letzteFahrtDatumF1 != null && letzteFahrtDatumF2 == null) {
-                    return 1; // f2 hat noch keine Fahrt, wird höher gewichtet
-                } else if (letzteFahrtDatumF1 != null && letzteFahrtDatumF2 != null) {
-                    int letzteFahrtComparison = letzteFahrtDatumF1.compareTo(letzteFahrtDatumF2);
-                    if (letzteFahrtComparison != 0) {
-                        return letzteFahrtComparison; // Sortiere aufsteigend nach Datum der letzten Fahrt
+                if (datumFahrt1 == null && datumFahrt2 != null) {
+                    return -1; // fahrt1 hat noch keine Fahrt, wird höher gewichtet
+                } else if (datumFahrt1 != null && datumFahrt2 == null) {
+                    return 1; // fahrt2 hat noch keine Fahrt, wird höher gewichtet
+                } else if (datumFahrt1 != null && datumFahrt2 != null) {
+                    int FahrtComparison = datumFahrt1.compareTo(datumFahrt2);
+                    if (FahrtComparison != 0) {
+                        return FahrtComparison; // Sortiere aufsteigend nach Datum der letzten Fahrt
                     }
                 }
 
                 // Wenn das Datum der letzten Fahrt gleich ist, Vergleich nach Abfahrtszeit
-                return f1.getAbfahrtszeit().compareTo(f2.getAbfahrtszeit());
+                return fahrt1.getAbfahrtszeit().compareTo(fahrt2.getAbfahrtszeit());
             }
 
+            //Bestimmung Priorität einer Tagesgruppe (für Sortierung)
             private int getTagesgruppePriority(String tagesgruppe) {
                 switch (tagesgruppe) {
                     case "Montag - Freitag Schule":
@@ -104,15 +110,16 @@ public class DispoList {
     }
 
 
+    //Bestimmung aktueller Tagesgruppe auf Basis des Datums
     public static String getAktuelleTagesgruppe(Calendar calendar) {
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
         if (dayOfWeek == Calendar.SATURDAY) {
             return "Samstag";
-        } else if (dayOfWeek == Calendar.SUNDAY || isHoliday(calendar)) {
+        } else if (dayOfWeek == Calendar.SUNDAY || isFeiertag(calendar)) {
             return "Sonn-/Feiertag";
         } else {
-            boolean isSchoolDay = isSchoolDay(calendar);
+            boolean isSchoolDay = isSchultag(calendar);
             if (isSchoolDay) {
                 return "Montag - Freitag Schule";
             } else {
@@ -121,27 +128,30 @@ public class DispoList {
         }
     }
 
-    private static boolean isSchoolDay(Calendar calendar) {
+    //Überprüfung ob Tag ein Schultag ist
+    private static boolean isSchultag(Calendar calendar) {
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         // Freitag ist ein Ferientag
         return dayOfWeek != Calendar.FRIDAY;
     }
 
-    private static boolean isHoliday(Calendar calendar) {
+    //Überprüfung ob Tag ein Feiertag ist
+    private static boolean isFeiertag(Calendar calendar) {
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         // Der erste Tag des Monats ist ein Feiertag
         return dayOfMonth == 1;
     }
 
-    public static Calendar getUserSpecifiedDate() {
+    //Bestimmung des zu verwendenden Datums
+    public static Calendar getUserDatum() {
         Scanner scanner = new Scanner(System.in);
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         Calendar calendar = Calendar.getInstance();
 
         System.out.print("\nSoll das aktuelle Datum verwendet werden? (y/n): ");
-        String useCurrentDate = scanner.nextLine().trim().toLowerCase();
+        String useAktuellesDatum = scanner.nextLine().trim().toLowerCase();
 
-        if (!useCurrentDate.equals("y")) {
+        if (!useAktuellesDatum.equals("y")) {
             boolean validDate = false;
             while (!validDate) {
                 System.out.print("\nBitte geben Sie das gewünschte Datum im Format DD.MM.YYYY ein: ");
@@ -159,12 +169,13 @@ public class DispoList {
         return calendar;
     }
 
+    //Durchführung Priorisierung und Schreiben in Log-Datei
     public static void main(String[] args) {
         Evaluation.main(args);
 
-        List<FahrtDaten.Fahrt> result = filterFahrtenOhneErfolgreicheGuetepruefung(Evaluation.fahrtenMap);
+ /*       List<FahrtDaten.Fahrt> result = filterFahrtenOhneErfolgreicheGuetepruefung(Evaluation.fahrtenMap);
 
-/*        System.out.println("LISTE FAHRTEN MIT FEHLENDER GÜTEPRÜFUNG: ");
+        System.out.println("LISTE FAHRTEN MIT FEHLENDER GÜTEPRÜFUNG: ");
         for (FahrtDaten.Fahrt fahrt : result) {
             System.out.println("Linie: " + fahrt.getLinie());
             System.out.println("Richtung: " + fahrt.getRichtung());
@@ -177,22 +188,22 @@ public class DispoList {
             System.out.println();
         }
 */
-        Calendar calendar = getUserSpecifiedDate();
+        Calendar calendar = getUserDatum();
         String aktuelleTagesgruppe = getAktuelleTagesgruppe(calendar);
         List<FahrtDaten.Fahrt> prioritizedFahrten = priorisierteFahrten(Evaluation.fahrtenMap, aktuelleTagesgruppe);
 
-        System.out.println("\nPRIORISIERTE LISTE ALLER FAHRTEN: ");
+        System.out.println("\nPriorisierte Liste aller Fahrten (Dispositionsliste): ");
 
-        // Get the username of the currently logged-in user
+        // Benutzername abrufen
         String userName = System.getProperty("user.name");
-        // Specify the path where you want to create the file, including the username
+        // Pfad zur Log-Datei festlegen
         String filePath = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/dispolist_log.txt";
 
         try (FileWriter writer = new FileWriter(filePath, false)) { // 'false' means overwrite mode
             for (FahrtDaten.Fahrt fahrt : prioritizedFahrten) {
                 int nochDurchzufuehrendeFahrten = fahrt.getGeplanteFahrten() - fahrt.getGuetepruefungOk();
                 double fortschritt = (double) fahrt.getGuetepruefungOk() / fahrt.getGeplanteFahrten() * 100;
-                Date letzteFahrtDatum = extractLetzteFahrtDatum(fahrt.getDaten());
+                Date letzteFahrtDatum = extractFahrtDatum(fahrt.getDaten());
                 long differenzInTagen = (calendar.getTime().getTime() - (letzteFahrtDatum != null ? letzteFahrtDatum.getTime() : calendar.getTime().getTime())) / (1000 * 60 * 60 * 24);
 
                 String output = String.format(
@@ -209,10 +220,8 @@ public class DispoList {
                         String.join(", ", fahrt.getDaten())
                 );
 
-                // Print to console
-                //System.out.print(output);
 
-                // Write to file
+                // In die Datei schreiben
                 writer.write(output);
             }
             System.out.println("Erfolgreich in die Log-Datei geschrieben: '" + filePath + "'");

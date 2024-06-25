@@ -5,6 +5,7 @@ import com.opencsv.bean.CsvBindByName;
 
 public class Erhebungsstand {
 
+    //CSV-Bindings für die entsprechenden Spaltennamen
     @CsvBindByName(column = "Tagesgruppe")
     private String tagesgruppe;
 
@@ -29,8 +30,8 @@ public class Erhebungsstand {
     @CsvBindByName(column = "Güteprüfung ok")
     private String guetepruefung;
 
-    // Getter und Setter
 
+    // Getter und Setter
     public String getTagesgruppe() {
         return tagesgruppe;
     }
@@ -95,6 +96,7 @@ public class Erhebungsstand {
         this.guetepruefung = guetepruefung;
     }
 
+    //Gibt String-Darstellung des Objektes zurück
     @Override
     public String toString() {
         return "Erhebungsstand{" +

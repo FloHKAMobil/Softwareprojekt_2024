@@ -16,14 +16,14 @@ public class Evaluation {
 
     public static Map<String, List<FahrtDaten.Fahrt>> fahrtenMap = new HashMap<>();
 
-    //ERHEBUNGSSTAND:
+        //Bewertung des Erhebungsstandes nach Tagesgruppe und Linie:
 
-    //Bewertung des Erhebungsstandes nach Tagesgruppe und Linie (!!!Fahrt aktuell außenvorgelassen weil eig. schon in CSV-Datei beschrieben!!!)
     public static void main(String[] args) {
         String csvFile = Config.getCsvFilePathErhebungsstand();
         Map<String, FahrtDaten> tagesgruppenMap = new HashMap<>();
         Map<String, FahrtDaten> linienMap = new HashMap<>();
 
+        //Lesen der Erhebungsstand CSV-Datei und Parsing der Daten
         try (FileReader reader = new FileReader(csvFile)) {
             HeaderColumnNameMappingStrategy<Erhebungsstand> strategy = new HeaderColumnNameMappingStrategy<>();
             strategy.setType(Erhebungsstand.class);
@@ -34,9 +34,10 @@ public class Evaluation {
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            List<Erhebungsstand> erhobeneStands = csvToBean.parse();
+            List<Erhebungsstand> erhebungsstandList = csvToBean.parse();
 
-            for (Erhebungsstand stand : erhobeneStands) {
+            //Verarbeiten der Erhebungsstand-Daten
+            for (Erhebungsstand stand : erhebungsstandList) {
                 String tagesgruppe = stand.getTagesgruppe();
                 String linie = stand.getLinie();
                 int geplant = Integer.parseInt(stand.getGeplant());
@@ -66,76 +67,56 @@ public class Evaluation {
         String filePath3 = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/linienlist_log.txt";
         String filePath4 = "C:/Users/" + userName + "/AppData/Roaming/Dispositionssoftware/fahrtverteilunglist_log.txt";
 
+        //Schreiben der Tagesgruppen- und Liniendaten in Dateien
         writeToFile(filePath2, tagesgruppenMap, "Tagesgruppe");
         writeToFile(filePath3, linienMap, "Linie");
 
-/*        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Nach Tagesgruppe:");
-        for (Map.Entry<String, FahrtDaten> entry : tagesgruppenMap.entrySet()) {
-            String tagesgruppe = entry.getKey();
-            FahrtDaten daten = entry.getValue();
-            System.out.println("Tagesgruppe: " + tagesgruppe);
-            System.out.println("Geplante Fahrten: " + daten.geplanteFahrten);
-            System.out.println("Erhobene Fahrten: " + daten.erhobeneFahrten);
-            System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);
-            System.out.println();
-        }
 
-        System.out.println("Nach Linie:");
-        for (Map.Entry<String, FahrtDaten> entry : linienMap.entrySet()) {
-            String linie = entry.getKey();
-            FahrtDaten daten = entry.getValue();
-            System.out.println("Linie: " + linie);
-            System.out.println("Geplante Fahrten: " + daten.geplanteFahrten);
-            System.out.println("Erhobene Fahrten: " + daten.erhobeneFahrten);
-            System.out.println("Güteprüfung ok: " + daten.guetepruefungOk);
-            System.out.println();
-        }
 
-        // Bewertung der Fahrtverteilung über ein Quartal
-        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Fahrtverteilung:"); */
+        //Bewertung der Fahrtverteilung über ein Quartal:
+
         String erhebungsstandCsvFile = Config.getCsvFilePathErhebungsstand();
         String zaehlfahrtenCsvFile = Config.getCsvFilePathZaehlfahrten();
         List<FahrtDaten.Fahrt> fahrtenListe = new ArrayList<>();
 
+
         // Mapping von Tagesgruppen
-        Map<String, String> tagesgruppenMap2 = new HashMap<>();
-        tagesgruppenMap2.put("Schule", "Montag - Freitag Schule");
-        tagesgruppenMap2.put("Ferien inkl. Brückentag", "Montag - Freitag Ferien");
-        tagesgruppenMap2.put("Sonntag", "Sonn-/Feiertag");
-        tagesgruppenMap2.put("Feiertag", "Sonn-/Feiertag");
+        Map<String, String> differentTagesgruppenCompareMap = new HashMap<>();
+        differentTagesgruppenCompareMap.put("Schule", "Montag - Freitag Schule");
+        differentTagesgruppenCompareMap.put("Ferien inkl. Brückentag", "Montag - Freitag Ferien");
+        differentTagesgruppenCompareMap.put("Sonntag", "Sonn-/Feiertag");
+        differentTagesgruppenCompareMap.put("Feiertag", "Sonn-/Feiertag");
 
-        try (FileReader erhReader = new FileReader(erhebungsstandCsvFile);
-             FileReader zaehlReader = new FileReader(zaehlfahrtenCsvFile)) {
+        //Lesen der Erhebungsstand- und Zählfahrten-CSV-Dateien und Verarbeitung der Daten
+        try (FileReader erhebungsstandReader = new FileReader(erhebungsstandCsvFile);
+             FileReader zaehlfahrtenReader = new FileReader(zaehlfahrtenCsvFile)) {
 
-            HeaderColumnNameMappingStrategy<Erhebungsstand> erhStrategy = new HeaderColumnNameMappingStrategy<>();
-            erhStrategy.setType(Erhebungsstand.class);
+            HeaderColumnNameMappingStrategy<Erhebungsstand> erhebungsstandStrategy = new HeaderColumnNameMappingStrategy<>();
+            erhebungsstandStrategy.setType(Erhebungsstand.class);
 
-            CsvToBean<Erhebungsstand> erhCsvToBean = new CsvToBeanBuilder<Erhebungsstand>(erhReader)
-                    .withMappingStrategy(erhStrategy)
+            CsvToBean<Erhebungsstand> erhebungsstandCsvToBean = new CsvToBeanBuilder<Erhebungsstand>(erhebungsstandReader)
+                    .withMappingStrategy(erhebungsstandStrategy)
                     .withSeparator(';')
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            List<Erhebungsstand> erhobeneStands = erhCsvToBean.parse();
+            List<Erhebungsstand> erhebungsstandList2 = erhebungsstandCsvToBean.parse();
 
-            HeaderColumnNameMappingStrategy<Zaehlfahrten> zaehlStrategy = new HeaderColumnNameMappingStrategy<>();
-            zaehlStrategy.setType(Zaehlfahrten.class);
+            HeaderColumnNameMappingStrategy<Zaehlfahrten> zaehlfahrtenStrategy = new HeaderColumnNameMappingStrategy<>();
+            zaehlfahrtenStrategy.setType(Zaehlfahrten.class);
 
-            CsvToBean<Zaehlfahrten> zaehlCsvToBean = new CsvToBeanBuilder<Zaehlfahrten>(zaehlReader)
-                    .withMappingStrategy(zaehlStrategy)
+            CsvToBean<Zaehlfahrten> zaehlfahrtenCsvToBean = new CsvToBeanBuilder<Zaehlfahrten>(zaehlfahrtenReader)
+                    .withMappingStrategy(zaehlfahrtenStrategy)
                     .withSeparator(';')
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            List<Zaehlfahrten> zaehlfahrten = zaehlCsvToBean.parse();
+            List<Zaehlfahrten> zaehlfahrten = zaehlfahrtenCsvToBean.parse();
 
-            for (Erhebungsstand stand : erhobeneStands) {
+            //Verarbeiten der Erhebungsstand-Daten
+            for (Erhebungsstand stand : erhebungsstandList2) {
                 String tagesgruppe = stand.getTagesgruppe();
-                String abfahrtszeit = stand.getAbfahrtszeit().substring(0, 5); // Extrahiere nur die ersten 5 Zeichen (HH:mm)
+                String abfahrtszeit = stand.getAbfahrtszeit().substring(0, 5); // Extrahiere nur die ersten 5 Zeichen (hh:mm)
 
                 int geplanteFahrten = Integer.parseInt(stand.getGeplant());
                 int guetepruefungOk = Integer.parseInt(stand.getGuetepruefung());
@@ -145,7 +126,7 @@ public class Evaluation {
                         stand.getRichtung(),
                         tagesgruppe,
                         stand.getStarthaltestelle(),
-                        abfahrtszeit, // Verkürzte Abfahrtszeit
+                        abfahrtszeit, // Verkürzte Abfahrtszeit (nur noch hh:mm)
                         geplanteFahrten,
                         guetepruefungOk
 
@@ -153,17 +134,18 @@ public class Evaluation {
                 fahrtenListe.add(fahrt);
             }
 
-            for (Zaehlfahrten fahrt : zaehlfahrten) {
-                String mappedTagesgruppe = tagesgruppenMap2.getOrDefault(fahrt.getTagesgruppe(), fahrt.getTagesgruppe());
-                String zaehlAbfahrtszeit = fahrt.getAbfahrtszeit().substring(0, 5); // Extrahiere nur die ersten 5 Zeichen (HH:mm)
+            //Verarbeiten der Zählfahrten-Daten
+            for (Zaehlfahrten zfahrt : zaehlfahrten) {
+                String mappedTagesgruppe = differentTagesgruppenCompareMap.getOrDefault(zfahrt.getTagesgruppe(), zfahrt.getTagesgruppe());
+                String zaehlfahrtenAbfahrtszeit = zfahrt.getAbfahrtszeit().substring(0, 5); // Extrahiere nur die ersten 5 Zeichen (hh:mm)
 
-                for (FahrtDaten.Fahrt f : fahrtenListe) {
-                    if (f.getLinie().equals(fahrt.getLinie())
-                            && f.getRichtung().equals(fahrt.getRichtung())
-                            && f.getTagesgruppe().equals(mappedTagesgruppe)
-                            && f.getStarthaltestelle().equals(fahrt.getStarthaltestelle())
-                            && f.getAbfahrtszeit().equals(zaehlAbfahrtszeit)) {
-                        f.addDatum(fahrt.getDatum());
+                for (FahrtDaten.Fahrt fahrt : fahrtenListe) {
+                    if (fahrt.getLinie().equals(zfahrt.getLinie())
+                            && fahrt.getRichtung().equals(zfahrt.getRichtung())
+                            && fahrt.getTagesgruppe().equals(mappedTagesgruppe)
+                            && fahrt.getStarthaltestelle().equals(zfahrt.getStarthaltestelle())
+                            && fahrt.getAbfahrtszeit().equals(zaehlfahrtenAbfahrtszeit)) {
+                        fahrt.addDatum(zfahrt.getDatum());
                     }
                 }
             }
@@ -171,20 +153,8 @@ public class Evaluation {
             // Schreiben der Fahrtverteilung in die Datei
             writeFahrtverteilungToFile(filePath4, fahrtenListe);
 
-            // Optional: Ausgabe der Fahrtverteilung auf der Konsole
- /*           for (FahrtDaten.Fahrt f : fahrtenListe) {
-                System.out.println("Linie: " + f.getLinie());
-                System.out.println("Richtung: " + f.getRichtung());
-                System.out.println("Tagesgruppe: " + f.getTagesgruppe());
-                System.out.println("Starthaltestelle: " + f.getStarthaltestelle());
-                System.out.println("Abfahrtszeit: " + f.getAbfahrtszeit());
-                System.out.println("Anzahl geplanter Fahrten: " + f.getGeplanteFahrten());
-                System.out.println("Anzahl Fahrten mit erfolgreicher Güteprüfung: " + f.getGuetepruefungOk());
-                System.out.println("Daten: " + String.join(", ", f.getDaten()));
-                System.out.println();
-            }*/
 
-            // Abspeichern der Fahrtenliste
+            // Abspeichern der Fahrtenliste in der fahrtenMap
             for (FahrtDaten.Fahrt f : fahrtenListe) {
                 String key = f.getLinie() + "_" + f.getRichtung() + "_" + f.getTagesgruppe() + "_" + f.getStarthaltestelle() + "_" + f.getAbfahrtszeit();
                 fahrtenMap.computeIfAbsent(key, k -> new ArrayList<>()).add(f);
@@ -195,6 +165,7 @@ public class Evaluation {
         }
     }
 
+    //Schreibt die Fahrt-Daten in eine Datei (für Tagesgruppen-Liste und Linien-Liste !!!)
     private static void writeToFile(String filePath, Map<String, FahrtDaten> dataMap, String type) {
         try (FileWriter writer = new FileWriter(filePath, false)) { // 'false' means overwrite mode
             for (Map.Entry<String, FahrtDaten> entry : dataMap.entrySet()) {
@@ -204,9 +175,6 @@ public class Evaluation {
                         "%s: %s\nGeplante Fahrten: %d\nErhobene Fahrten: %d\nGüteprüfung ok: %d\n\n",
                         type, key, daten.geplanteFahrten, daten.erhobeneFahrten, daten.guetepruefungOk
                 );
-
-                // Print to console
-                //System.out.print(output);
 
                 // Write to file
                 writer.write(output);
@@ -218,6 +186,7 @@ public class Evaluation {
         }
     }
 
+    //Schreibt die Fahrt-Daten für die Fahrtverteilung in eine Datei (NUR für Fahrtverteilugngs-Liste !!!)
     private static void writeFahrtverteilungToFile(String filePath, List<FahrtDaten.Fahrt> fahrtenListe) {
         try (FileWriter writer = new FileWriter(filePath, false)) { // 'false' means overwrite mode
             for (FahrtDaten.Fahrt f : fahrtenListe) {
@@ -232,9 +201,6 @@ public class Evaluation {
                         f.getGuetepruefungOk(),
                         String.join(", ", f.getDaten())
                 );
-
-                // Print to console
-                //System.out.print(output);
 
                 // Write to file
                 writer.write(output);

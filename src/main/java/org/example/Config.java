@@ -1,6 +1,8 @@
 package org.example;
 
 public class Config {
+
+    //Variablen für Dateipfade
     private static String csvFilePathErhebungsstand;
     private static String csvFilePathZaehlfahrten;
 

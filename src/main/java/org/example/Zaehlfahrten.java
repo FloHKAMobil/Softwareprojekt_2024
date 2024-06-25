@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 
 public class Zaehlfahrten {
 
+    //CSV-Bindings für die entsprechenden Spaltennamen
     @CsvBindByName(column = "Linie")
     private String linie;
 
@@ -27,8 +28,6 @@ public class Zaehlfahrten {
 
 
     // Getter und Setter
-
-
     public String getLinie() {
         return linie;
     }
@@ -87,6 +86,7 @@ public class Zaehlfahrten {
     }
 
 
+    //Gibt String-Darstellung des Objektes zurück
     @Override
     public String toString() {
         return "Zaehlfahrten{" +
